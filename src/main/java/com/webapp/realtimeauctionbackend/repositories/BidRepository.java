@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,4 +45,13 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     @Query("SELECT b FROM Bid b WHERE b.bidder = :bidder")
     Page<Bid> findByBidder(@Param("bidder") Person bidder, Pageable pageable);
+
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt > :date")
+    long countByCreatedAtAfter(@Param("date") LocalDateTime date);
+
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt < :date")
+    long countByCreatedAtBefore(@Param("date") LocalDateTime date);
+
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt BETWEEN :start AND :end")
+    long countByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

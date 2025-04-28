@@ -51,4 +51,16 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             @Param("currentBidder") Person currentBidder,
             @Param("status") AuctionStatus status,
             Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Auction a WHERE a.status = :status")
+    long countByStatus(@Param("status") AuctionStatus status);
+
+    @Query("SELECT COUNT(a) FROM Auction a WHERE a.createdAt < :date")
+    long countByCreatedAtBefore(@Param("date") LocalDateTime date);
+
+    @Query("SELECT COUNT(a) FROM Auction a WHERE a.createdAt BETWEEN :start AND :end")
+    long countByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT a FROM Auction a WHERE a.status = :status")
+    List<Auction> findByStatus(@Param("status") AuctionStatus status);
 }

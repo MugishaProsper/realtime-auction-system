@@ -1,4 +1,4 @@
-package com.webapp.realtimeauctionbackend.config;
+package com.webapp.realtimeauctionbackend.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

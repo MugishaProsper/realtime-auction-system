@@ -1,6 +1,7 @@
 package com.webapp.realtimeauctionbackend.services;
 
 import com.webapp.realtimeauctionbackend.DTOs.AdminDashboardStatsDto;
+import com.webapp.realtimeauctionbackend.constants.AuctionStatus;
 import com.webapp.realtimeauctionbackend.models.Auction;
 import com.webapp.realtimeauctionbackend.models.Bid;
 import com.webapp.realtimeauctionbackend.models.Person;
@@ -56,7 +57,7 @@ public class AdminStatisticsService {
 
         // User Statistics
         int totalUsers = (int) personRepository.count();
-        int activeUsersLast30Days = personRepository.countByLastLoginAfter(thirtyDaysAgo);
+        int activeUsersLast30Days = (int) personRepository.countByLastLoginAfter(thirtyDaysAgo);
         double userGrowthRate = calculateGrowthRate(
             personRepository.countByCreatedAtBefore(thirtyDaysAgo),
             totalUsers
@@ -69,8 +70,8 @@ public class AdminStatisticsService {
 
         // Auction Statistics
         int totalAuctions = (int) auctionRepository.count();
-        int activeAuctions = auctionRepository.countByStatus(Auction.AuctionStatus.ACTIVE);
-        int closedAuctions = auctionRepository.countByStatus(Auction.AuctionStatus.CLOSED);
+        int activeAuctions = (int) auctionRepository.countByStatus(AuctionStatus.ACTIVE);
+        int closedAuctions = (int) auctionRepository.countByStatus(AuctionStatus.CLOSED);
         double auctionGrowthRate = calculateGrowthRate(
             auctionRepository.countByCreatedAtBefore(thirtyDaysAgo),
             totalAuctions
@@ -82,7 +83,7 @@ public class AdminStatisticsService {
         );
 
         // Financial Statistics
-        List<Auction> closedAuctionsList = auctionRepository.findByStatus(Auction.AuctionStatus.CLOSED);
+        List<Auction> closedAuctionsList = auctionRepository.findByStatus(AuctionStatus.CLOSED);
         double totalRevenue = closedAuctionsList.stream()
             .mapToDouble(Auction::getCurrentPrice)
             .sum();
@@ -104,9 +105,8 @@ public class AdminStatisticsService {
             .orElse(0);
         Map<String, Double> dailyRevenueTrend = getDailyRevenueTrend(closedAuctionsList, thirtyDaysAgo, now);
 
-        // Bidding Statistics
         int totalBids = (int) bidRepository.count();
-        int bidsLast24Hours = bidRepository.countByCreatedAtAfter(twentyFourHoursAgo);
+        int bidsLast24Hours = (int) bidRepository.countByCreatedAtAfter(twentyFourHoursAgo);
         double averageBidAmount = totalBids > 0 ? 
             bidRepository.findAll().stream()
                 .mapToDouble(Bid::getAmount)
@@ -206,8 +206,9 @@ public class AdminStatisticsService {
         LocalDateTime current = start;
         while (current.isBefore(end)) {
             LocalDateTime nextDay = current.plusDays(1);
+            LocalDateTime finalCurrent = current;
             double dailyRevenue = closedAuctions.stream()
-                .filter(auction -> auction.getEndTime().isAfter(current) && 
+                .filter(auction -> auction.getEndTime().isAfter(finalCurrent) &&
                                  auction.getEndTime().isBefore(nextDay))
                 .mapToDouble(Auction::getCurrentPrice)
                 .sum();

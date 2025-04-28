@@ -1,4 +1,4 @@
-package com.webapp.realtimeauctionbackend.config;
+package com.webapp.realtimeauctionbackend.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
