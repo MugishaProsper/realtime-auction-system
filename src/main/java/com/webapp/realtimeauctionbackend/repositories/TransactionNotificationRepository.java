@@ -1,6 +1,7 @@
 package com.webapp.realtimeauctionbackend.repositories;
 
 import com.webapp.realtimeauctionbackend.models.Person;
+import com.webapp.realtimeauctionbackend.models.Transaction;
 import com.webapp.realtimeauctionbackend.models.TransactionNotification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,19 @@ public interface TransactionNotificationRepository extends JpaRepository<Transac
     
     @Query("SELECT n FROM TransactionNotification n WHERE n.user = :user AND n.createdAt >= :since ORDER BY n.createdAt DESC")
     List<TransactionNotification> findRecentNotifications(@Param("user") Person user, @Param("since") LocalDateTime since);
+
+    @Query("SELECT n FROM TransactionNotification n WHERE n.transaction = :transaction ORDER BY n.createdAt DESC")
+    List<TransactionNotification> findByTransaction(@Param("transaction") Transaction transaction);
+
+    @Query("SELECT n FROM TransactionNotification n WHERE n.user = :user AND n.createdAt BETWEEN :start AND :end ORDER BY n.createdAt DESC")
+    List<TransactionNotification> findByUserAndDateRange(
+            @Param("user") Person user,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
+
+    @Query("SELECT COUNT(n) FROM TransactionNotification n WHERE n.user = :user AND n.createdAt BETWEEN :start AND :end")
+    long countByUserAndDateRange(
+            @Param("user") Person user,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 } 

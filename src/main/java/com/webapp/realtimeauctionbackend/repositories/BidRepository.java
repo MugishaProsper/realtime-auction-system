@@ -46,12 +46,12 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query("SELECT b FROM Bid b WHERE b.bidder = :bidder")
     Page<Bid> findByBidder(@Param("bidder") Person bidder, Pageable pageable);
 
-    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt > :date")
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.timestamp > :date")
     long countByCreatedAtAfter(@Param("date") LocalDateTime date);
 
-    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt < :date")
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.timestamp < :date")
     long countByCreatedAtBefore(@Param("date") LocalDateTime date);
 
-    @Query("SELECT COUNT(b) FROM Bid b WHERE b.createdAt BETWEEN :start AND :end")
+    @Query("SELECT COUNT(b) FROM Bid b WHERE b.timestamp BETWEEN :start AND :end")
     long countByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

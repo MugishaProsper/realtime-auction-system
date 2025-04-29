@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,9 @@ public class Auction {
     @NotNull(message = "End time is required")
     private LocalDateTime endTime;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
     private AuctionStatus status = AuctionStatus.SCHEDULED;
@@ -54,6 +58,22 @@ public class Auction {
     @ManyToOne
     @JoinColumn(name = "current_bidder_id")
     private Person currentBidder;
+
+    @ManyToMany
+    @JoinTable(
+        name = "auction_categories",
+        joinColumns = @JoinColumn(name = "auction_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "auction_tags",
+        joinColumns = @JoinColumn(name = "auction_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
 
     public Auction() {}
 

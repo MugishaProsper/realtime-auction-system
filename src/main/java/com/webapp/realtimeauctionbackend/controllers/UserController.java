@@ -25,16 +25,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
     private final PersonRepository personRepository;
-    private final SecurityUtils securityUtils;
     private final BidRepository bidRepository;
     private final AuctionRepository auctionRepository;
 
-    public UserController(PersonRepository personRepository, 
-                         SecurityUtils securityUtils,
+    public UserController(PersonRepository personRepository,
                          BidRepository bidRepository,
                          AuctionRepository auctionRepository) {
         this.personRepository = personRepository;
-        this.securityUtils = securityUtils;
         this.bidRepository = bidRepository;
         this.auctionRepository = auctionRepository;
     }
@@ -42,7 +39,7 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponseDto> getProfile() {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person person = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -60,7 +57,7 @@ public class UserController {
     @PutMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponseDto> updateProfile(@Valid @RequestBody UserUpdateDto updateDto) {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person person = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -84,7 +81,7 @@ public class UserController {
     @DeleteMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteProfile() {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person person = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -95,7 +92,7 @@ public class UserController {
     @GetMapping("/bids")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<BidResponseDto>> getUserBids(Pageable pageable) {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person user = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -114,7 +111,7 @@ public class UserController {
     @GetMapping("/auctions")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<AuctionResponseDto>> getUserAuctions(Pageable pageable) {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person user = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -150,7 +147,7 @@ public class UserController {
     @GetMapping("/auctions/won")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<AuctionResponseDto>> getWonAuctions(Pageable pageable) {
-        Long userId = securityUtils.getCurrentUserId();
+        Long userId = SecurityUtils.getCurrentUserId();
         Person user = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

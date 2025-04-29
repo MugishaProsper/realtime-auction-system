@@ -37,30 +37,29 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public List<TransactionNotification> getUnreadNotifications(Long userId) {
-        return notificationRepository.findByUserAndReadFalseOrderByCreatedAtDesc(
-            Person.builder().id(userId).build()
-        );
+        Person user = new Person();
+        user.setId(userId);
+        return notificationRepository.findByUserAndReadFalseOrderByCreatedAtDesc(user);
     }
 
     @Transactional(readOnly = true)
     public long getUnreadNotificationCount(Long userId) {
-        return notificationRepository.countUnreadNotifications(
-            Person.builder().id(userId).build()
-        );
+        Person user = new Person();
+        user.setId(userId);
+        return notificationRepository.countUnreadNotifications(user);
     }
 
     @Transactional
     public void markNotificationsAsRead(Long userId) {
-        notificationRepository.markAllAsRead(
-            Person.builder().id(userId).build()
-        );
+        Person user = new Person();
+        user.setId(userId);
+        notificationRepository.markAllAsRead(user);
     }
 
     @Transactional(readOnly = true)
     public List<TransactionNotification> getRecentNotifications(Long userId, LocalDateTime since) {
-        return notificationRepository.findRecentNotifications(
-            Person.builder().id(userId).build(),
-            since
-        );
+        Person user = new Person();
+        user.setId(userId);
+        return notificationRepository.findRecentNotifications(user, since);
     }
 } 

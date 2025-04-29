@@ -37,8 +37,29 @@ public class Transaction {
     @Column
     private String referenceId; // For external references (e.g., auction ID)
 
+    @Column
+    private String transactionHash; // For blockchain transactions
+
+    @Column
+    private String errorMessage; // For failed transactions
+
     @PrePersist
     protected void onCreate() {
         timestamp = LocalDateTime.now();
+        if (status == null) {
+            status = TransactionStatus.PENDING;
+        }
+    }
+
+    public boolean isCompleted() {
+        return status == TransactionStatus.COMPLETED;
+    }
+
+    public boolean isFailed() {
+        return status == TransactionStatus.FAILED;
+    }
+
+    public boolean isPending() {
+        return status == TransactionStatus.PENDING;
     }
 } 

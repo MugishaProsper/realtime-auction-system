@@ -7,6 +7,8 @@ import com.webapp.realtimeauctionbackend.services.TransactionService;
 import com.webapp.realtimeauctionbackend.services.WalletService;
 import com.webapp.realtimeauctionbackend.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -61,25 +63,28 @@ public class WalletController {
 
     @GetMapping("/transactions")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Transaction>> getTransactions() {
+    public ResponseEntity<Page<Transaction>> getTransactions(Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserId();
-        return ResponseEntity.ok(transactionService.getWalletTransactions(userId));
+        return ResponseEntity.ok(transactionService.getWalletTransactions(userId, pageable));
     }
 
     @GetMapping("/transactions/type/{type}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Transaction>> getTransactionsByType(@PathVariable TransactionType type) {
+    public ResponseEntity<Page<Transaction>> getTransactionsByType(
+            @PathVariable TransactionType type,
+            Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserId();
-        return ResponseEntity.ok(transactionService.getWalletTransactionsByType(userId, type));
+        return ResponseEntity.ok(transactionService.getWalletTransactionsByType(userId, type, pageable));
     }
 
     @GetMapping("/transactions/date-range")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Transaction>> getTransactionsByDateRange(
+    public ResponseEntity<Page<Transaction>> getTransactionsByDateRange(
             @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end) {
+            @RequestParam LocalDateTime end,
+            Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserId();
-        return ResponseEntity.ok(transactionService.getWalletTransactionsByDateRange(userId, start, end));
+        return ResponseEntity.ok(transactionService.getWalletTransactionsByDateRange(userId, start, end, pageable));
     }
 
     @PostMapping("/verify")
